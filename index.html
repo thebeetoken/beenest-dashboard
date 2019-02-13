@@ -48,7 +48,10 @@
       const hosts = new KeenDataviz({
         container: '#hosts',
         title: 'Hosts',
-        showLoadingSpinner: true
+        showLoadingSpinner: true,
+        labelMapping: {
+          'userPayoutInfoCompleted count': 'Payout info completed'
+        }
       });
 
       const guests = new KeenDataviz({
@@ -73,6 +76,17 @@
       ])
       .then(results => listings.render(results))
       .catch(error => listings.message(error.message));
+
+      client.run([
+        client.query({
+          analysis_type: 'count',
+          event_collection: 'userPayoutInfoCompleted',
+          timeframe: 'this_14_days',
+          interval: 'weekly'
+        })
+      ])
+      .then(results => hosts.render(results))
+      .catch(error => hosts.message(error.message));
     </script>
   </body>
 </html>
