@@ -32,15 +32,27 @@
       const listings = new KeenDataviz({
         container: '#listings',
         title: 'Listings',
-        showLoadingSpinner: true
+        showLoadingSpinner: true,
+        labelMapping: {
+          'listingStarted count': 'Started',
+          'listingPublished count': 'Published'
+        }
       });
 
-      client.query({
-        analysis_type: 'count',
-        event_collection: 'listingStarted',
-        timeframe: 'this_14_days',
-        interval: 'weekly'
-      })
+      client.run([
+        client.query({
+          analysis_type: 'count',
+          event_collection: 'listingStarted',
+          timeframe: 'this_14_days',
+          interval: 'weekly'
+        }),
+        client.query({
+          analysis_type: 'count',
+          event_collection: 'listingPublished',
+          timeframe: 'this_14_days',
+          interval: 'weekly'
+        })
+      ])
       .then(results => listings.render(results))
       .catch(error => listings.message(error.message));
     </script>
