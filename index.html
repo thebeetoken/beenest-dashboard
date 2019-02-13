@@ -39,6 +39,24 @@
         }
       });
 
+      const bookings = new KeenDataviz({
+        container: '#bookings',
+        title: 'Bookings',
+        showLoadingSpinner: true
+      });
+
+      const hosts = new KeenDataviz({
+        container: '#hosts',
+        title: 'Hosts',
+        showLoadingSpinner: true
+      });
+
+      const guests = new KeenDataviz({
+        container: '#guests',
+        title: 'Guests',
+        showLoadingSpinner: true
+      });
+
       client.run([
         client.query({
           analysis_type: 'count',
