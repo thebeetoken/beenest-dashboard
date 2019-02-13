@@ -34,27 +34,20 @@
         readKey: 'EA80E1D1209DDCCF3D7B01FA7D8461950D57B4207DCA0470DFE1770A81A5CCA42CF7CD4EBEFF904F76F55DCA0CCA23D0D9B68B87EED8601744FEBC9BB883AB46C674D8FD81603CAB827004BC78734189096152E6D9BA5D6A27418684562F9A0D'
       });
 
-      const chart = new KeenDataviz({
-        
+      const listings = new KeenDataviz({
+        container: '#listings',
+        title: 'Listings',
+        showLoadingSpinner: true
       });
 
-      client
-        .query({
-          analysis_type: 'count',
-          event_collection: 'listingStarted',
-          timeframe: 'this_14_days',
-          interval: 'weekly'
-        })
-        .then(function(results){
-          // pass the result to the chart
-          chart
-            .render(results);
-        })
-        .catch(function(error){
-          // on error
-          chart
-            .message(error.message);
-        });
+      client.query({
+        analysis_type: 'count',
+        event_collection: 'listingStarted',
+        timeframe: 'this_14_days',
+        interval: 'weekly'
+      })
+      .then(results => listings.render(results))
+      .catch(error => listings.message(error.message));
     </script>
   </body>
 </html>
