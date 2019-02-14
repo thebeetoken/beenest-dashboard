@@ -80,6 +80,17 @@
       client.run([
         client.query({
           analysis_type: 'count',
+          event_collection: 'signup',
+          timeframe: 'this_14_days',
+          interval: 'weekly',
+          filters: [{
+            property_name: 'isHost',
+            operator: 'eq',
+            property_value: true
+          }]
+        }),
+        client.query({
+          analysis_type: 'count',
           event_collection: 'userPayoutInfoCompleted',
           timeframe: 'this_14_days',
           interval: 'weekly'
