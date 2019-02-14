@@ -98,6 +98,22 @@
       ])
       .then(results => hosts.render(results))
       .catch(error => hosts.message(error.message));
+
+      client.run([
+        client.query({
+          analysis_type: 'count',
+          event_collection: 'signup',
+          timeframe: 'this_14_days',
+          interval: 'weekly',
+          filters: [{
+            property_name: 'isHost',
+            operator: 'eq',
+            property_value: false
+          }]
+        })
+      ])
+      .then(results => guests.render(results))
+      .catch(error => guests.message(error.message));
     </script>
   </body>
 </html>
