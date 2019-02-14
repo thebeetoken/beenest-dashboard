@@ -23,42 +23,41 @@
             zoomInLimit: 60 * 1000
           }]
         }));
+        openmct.install(openmct.plugins.StaticRootPlugin('static', 'dashboards.json'));
         
         const client = new KeenAnalysis({
           projectId: '5c6471eec9e77c000121bb53',
           readKey: 'EA80E1D1209DDCCF3D7B01FA7D8461950D57B4207DCA0470DFE1770A81A5CCA42CF7CD4EBEFF904F76F55DCA0CCA23D0D9B68B87EED8601744FEBC9BB883AB46C674D8FD81603CAB827004BC78734189096152E6D9BA5D6A27418684562F9A0D'
         });
-        const BEE_ROOT = { namespace: 'bee', key: 'metrics' };
-        openmct.objects.addRoot(BEE_ROOT);
+        openmct.objects.addRoot({ namespace: 'bee', key: 'metrics' });
         openmct.objects.addProvider('bee', {
           get: async identifier => {
             if (identifier.key === 'metrics') {
               return { identifier, name: "Metrics", type: 'folder', location: 'ROOT' };
-            } else {
-              return {
-                identifier,
-                name: identifier.key,
-                type: 'metric',
-                location: 'bee:metrics',
-                telemetry: {
-                  values: [
-                    {
-                      "key": "value",
-                      "name": "Count",
-                      "format": "float",
-                      "hints": { "range": 1 }
-                    },
-                    {
-                      "key": "utc",
-                      "source": "timestamp",
-                      "name": "Time",
-                      "format": "utc",
-                      "hints": { "domain": 1 }
-                    }              
-                  ]
-                }
-              };
             }
+            return {
+              identifier,
+              name: identifier.key,
+              type: 'metric',
+              location: 'bee:metrics',
+              telemetry: {
+                values: [
+                  {
+                    "key": "value",
+                    "name": "Count",
+                    "format": "float",
+                    "hints": { "range": 1 }
+                  },
+                  {
+                    "key": "utc",
+                    "source": "timestamp",
+                    "name": "Time",
+                    "format": "utc",
+                    "hints": { "domain": 1 }
+                  }
+                ]
+              }
+            };
           }
         });
         openmct.composition.addProvider({
