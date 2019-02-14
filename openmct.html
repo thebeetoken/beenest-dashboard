@@ -11,9 +11,17 @@
         openmct.install(openmct.plugins.LocalStorage());
         openmct.install(openmct.plugins.MyItems());
         openmct.install(openmct.plugins.UTCTimeSystem());
-        openmct.time.clock('local', {start: -15 * 60 * 1000, end: 0});
-        openmct.time.timeSystem('utc');
+        openmct.time.timeSystem('utc', { start: Date.now() - 180 * 24 * 60 * 60 * 1000, end: Date.now() });
         openmct.install(openmct.plugins.Espresso());
+        openmct.install(openmct.plugins.Conductor({
+          menuOptions: [{
+            name: 'Fixed',
+            timeSystem: 'utc',
+            bounds: { start: Date.now() - 180 * 24 * 60 * 60 * 1000, end: Date.now() },
+            zoomOutLimit: 365 * 24 * 60 * 60 * 1000,
+            zoomInLimit: 60 * 1000
+          }]
+        }));
 
         const client = new KeenAnalysis({
           projectId: '5c6471eec9e77c000121bb53',
@@ -26,7 +34,29 @@
             if (identifier.key === 'metrics') {
               return { identifier, name: "Metrics", type: 'folder', location: 'ROOT' };
             } else {
-              return { identifier, name: identifier.key, type: 'folder', location: 'bee:metrics' };
+              return {
+                identifier,
+                name: identifier.key,
+                type: 'metric',
+                location: 'bee:metrics',
+                telemetry: {
+                  values: [
+                    {
+                      "key": "count",
+                      "name": "Count",
+                      "format": "float",
+                      "hints": { "range": 1 }
+                    },
+                    {
+                      "key": "utc",
+                      "source": "timestamp",
+                      "name": "Time",
+                      "format": "utc",
+                      "hints": { "domain": 1 }
+                    }              
+                  ]
+                }
+              };
             }
           }
         });
@@ -35,6 +65,25 @@
           load: async obj => {
             const res = await client.get(client.url('events')).auth(client.readKey()).send();
             return res.map(metric => ({ namespace: 'bee', key: metric.name }))
+          }
+        });
+        openmct.types.addType('metric', {
+          name: 'Metric',
+          description: 'A measurement.',
+          cssClass: 'icon-telemetry'
+        });
+        openmct.telemetry.addProvider({
+          supportsRequest: obj => obj.type === 'metric',
+          request: async (obj, opts) => {
+            const timeframe = { start: new Date(opts.start), end: new Date(opts.end) };
+            const res = await client.query({
+              analysis_type: 'count',
+              event_collection: obj.identifier.key,
+              timeframe,
+              interval: 'weekly'
+            });
+            console.log(res);
+            return res.result;
           }
         });
 
