@@ -3,7 +3,7 @@
 <head>
     <title>Open MCT Tutorials</title>
     <script src="node_modules/openmct/dist/openmct.js"></script>
-    <script src="lib/http.js"></script>
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/keen-analysis@3"></script>
 </head>
 <body>
     <script>
@@ -15,12 +15,26 @@
         openmct.time.timeSystem('utc');
         openmct.install(openmct.plugins.Espresso());
 
-        openmct.objects.addRoot({ namespace: 'bee', key: 'metrics' });
+        const client = new KeenAnalysis({
+          projectId: '5c6471eec9e77c000121bb53',
+          readKey: 'EA80E1D1209DDCCF3D7B01FA7D8461950D57B4207DCA0470DFE1770A81A5CCA42CF7CD4EBEFF904F76F55DCA0CCA23D0D9B68B87EED8601744FEBC9BB883AB46C674D8FD81603CAB827004BC78734189096152E6D9BA5D6A27418684562F9A0D'
+        });
+        const BEE_ROOT = { namespace: 'bee', key: 'metrics' };
+        openmct.objects.addRoot(BEE_ROOT);
         openmct.objects.addProvider('bee', {
           get: async identifier => {
             if (identifier.key === 'metrics') {
               return { identifier, name: "Metrics", type: 'folder', location: 'ROOT' };
+            } else {
+              return { identifier, name: identifier.key, type: 'folder', location: 'bee:metrics' };
             }
+          }
+        });
+        openmct.composition.addProvider({
+          appliesTo: obj => obj.identifier.namespace === 'bee' && obj.identifier.key == 'metrics',
+          load: async obj => {
+            const res = await client.get(client.url('events')).auth(client.readKey()).send();
+            return res.map(metric => ({ namespace: 'bee', key: metric.name }))
           }
         });
 
