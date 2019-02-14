@@ -78,6 +78,24 @@
       .catch(error => listings.message(error.message));
 
       client.run([
+        'bookingStarted',
+        'bookingRequested',
+        'bookingAccepted',
+        'bookingRejected',
+        'bookingRescinded',
+        'bookingCancelled',
+        'bookingPaidByGuest',
+        'bookingPaidOut',
+      ].map(event => ({
+        analysis_type: 'count',
+        event_collection: event,
+        timeframe: 'this_14_days',
+        interval: 'weekly'
+      })))
+      .then(results => bookings.render(results))
+      .catch(error => bookings.message(error.message));
+
+      client.run([
         client.query({
           analysis_type: 'count',
           event_collection: 'signup',
