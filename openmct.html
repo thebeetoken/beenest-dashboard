@@ -13,6 +13,7 @@
         openmct.install(openmct.plugins.UTCTimeSystem());
         openmct.time.timeSystem('utc', { start: Date.now() - 180 * 24 * 60 * 60 * 1000, end: Date.now() });
         openmct.install(openmct.plugins.Espresso());
+        openmct.install(openmct.plugins.ImportExport());
         openmct.install(openmct.plugins.Conductor({
           menuOptions: [{
             name: 'Fixed',
@@ -22,7 +23,7 @@
             zoomInLimit: 60 * 1000
           }]
         }));
-
+        
         const client = new KeenAnalysis({
           projectId: '5c6471eec9e77c000121bb53',
           readKey: 'EA80E1D1209DDCCF3D7B01FA7D8461950D57B4207DCA0470DFE1770A81A5CCA42CF7CD4EBEFF904F76F55DCA0CCA23D0D9B68B87EED8601744FEBC9BB883AB46C674D8FD81603CAB827004BC78734189096152E6D9BA5D6A27418684562F9A0D'
@@ -42,7 +43,7 @@
                 telemetry: {
                   values: [
                     {
-                      "key": "count",
+                      "key": "value",
                       "name": "Count",
                       "format": "float",
                       "hints": { "range": 1 }
@@ -83,7 +84,10 @@
               interval: 'weekly'
             });
             console.log(res);
-            return res.result;
+            return res.result.map(({ value, timeframe }) => ({
+              value,
+              timestamp: new Date(timeframe.end).valueOf()
+            }));
           }
         });
 
