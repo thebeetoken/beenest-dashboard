@@ -138,7 +138,6 @@
               timeframe,
               interval: 'weekly'
             });
-            console.log(res);
             return res.result.map(({ value, timeframe }) => ({
               value,
               timestamp: new Date(timeframe.end).valueOf()
