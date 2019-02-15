@@ -122,7 +122,6 @@
               timeframe,
               interval: 'weekly'
             });
-            console.log(res);
             return res.result.map(({ value, timeframe }) => ({
               value,
               timestamp: new Date(timeframe.end).valueOf()
@@ -132,8 +131,18 @@
         openmct.telemetry.addProvider({
           supportsRequest: obj => obj.type === 'keen.query',
           request: async (obj, opts) => {
-            console.log(obj);
-            return [];
+            const query = JSON.parse(obj.query);
+            const timeframe = { start: new Date(opts.start), end: new Date(opts.end) };
+            const res = await client.query({
+              ...query,
+              timeframe,
+              interval: 'weekly'
+            });
+            console.log(res);
+            return res.result.map(({ value, timeframe }) => ({
+              value,
+              timestamp: new Date(timeframe.end).valueOf()
+            }));
           }
         });
 
