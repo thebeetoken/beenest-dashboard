@@ -83,6 +83,35 @@
       .catch(error => listings.message(error.message));
 
       client.run([
+        client.query({
+          analysis_type: 'count',
+          event_collection: 'listingStarted',
+          timeframe,
+          interval: 'weekly'
+        }),
+        client.query({
+          analysis_type: 'count',
+          event_collection: 'listingPublished',
+          timeframe,
+          interval: 'weekly'
+        })
+      ])
+      .then(results => results.map(result => {
+        let sum = 0;
+        const totals = result.result.map(point => {
+          sum += point.value;
+          return { ...point, value: sum };
+        });
+        return {
+          ...result,
+          query: { ...result.query, analysis_type: 'total' },
+          result: totals
+        };
+      }))
+      .then(results => listings.render(results))
+      .catch(error => listings.message(error.message));
+
+      client.run([
         'bookingStarted',
         'bookingRequested',
         'bookingAccepted',
