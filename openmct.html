@@ -44,7 +44,7 @@
                 values: [
                   {
                     "key": "value",
-                    "name": "Count",
+                    "name": "Value",
                     "format": "float",
                     "hints": { "range": 1 }
                   },
@@ -77,6 +77,26 @@
           description: "A keen.io analytics query",
           cssClass: 'icon-telemetry',
           creatable: true,
+          initialize: obj => {
+            obj.filters = '[]';
+            obj.telemetry = {
+              values: [
+                {
+                  "key": "value",
+                  "name": "Value",
+                  "format": "float",
+                  "hints": { "range": 1 }
+                },
+                {
+                  "key": "utc",
+                  "source": "timestamp",
+                  "name": "Time",
+                  "format": "utc",
+                  "hints": { "domain": 1 }
+                }
+              ]
+            };
+          },
           form: [
             {
               key: 'filters',
@@ -88,7 +108,8 @@
             {
               key: 'metric',
               name: 'Metric',
-              control: 'locator'
+              control: 'textfield',
+              required: true
             },
             {
               key: 'total',
@@ -112,6 +133,13 @@
               value,
               timestamp: new Date(timeframe.end).valueOf()
             }));
+          }
+        });
+        openmct.telemetry.addProvider({
+          supportsRequest: obj => obj.type === 'keen.query',
+          request: async (obj, opts) => {
+            console.log(obj);
+            return [];
           }
         });
 
