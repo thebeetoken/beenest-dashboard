@@ -138,6 +138,23 @@
               timeframe,
               interval: 'weekly'
             });
+            if (obj.total) {
+              const priors = await client.query({
+                ...query,
+                timeframe: { start: new Date('2018-01-01'), end: new Date(opts.start) },
+                interval: 'yearly'
+              });
+              console.log(priors);
+              let sum = priors.result.reduce((total, { value }) => total + value, 0);
+              console.log(sum);
+              return res.result.map(({ value, timeframe }) => {
+                sum += value;
+                return {
+                  value: sum,
+                  timestamp: new Date(timeframe.end).valueOf()
+                };
+              });
+            }
             return res.result.map(({ value, timeframe }) => ({
               value,
               timestamp: new Date(timeframe.end).valueOf()
