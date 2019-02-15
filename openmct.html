@@ -72,6 +72,31 @@
           description: 'A measurement.',
           cssClass: 'icon-telemetry'
         });
+        openmct.types.addType('keen.query', {
+          name: 'Keen Query',
+          description: "A keen.io analytics query",
+          cssClass: 'icon-telemetry',
+          creatable: true,
+          form: [
+            {
+              key: 'filters',
+              name: 'Filters (JSON array)',
+              control: 'textarea',
+              required: true,
+              cssClass: 'l-textarea-sm'
+            },
+            {
+              key: 'metric',
+              name: 'Metric',
+              control: 'locator'
+            },
+            {
+              key: 'total',
+              name: 'Show totals?',
+              control: 'checkbox'
+            }
+          ]
+        });
         openmct.telemetry.addProvider({
           supportsRequest: obj => obj.type === 'metric',
           request: async (obj, opts) => {
