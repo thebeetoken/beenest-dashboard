@@ -78,7 +78,7 @@
           cssClass: 'icon-telemetry',
           creatable: true,
           initialize: obj => {
-            obj.filters = '[]';
+            obj.query = '{}';
             obj.telemetry = {
               values: [
                 {
@@ -99,21 +99,15 @@
           },
           form: [
             {
-              key: 'filters',
-              name: 'Filters (JSON array)',
+              key: 'query',
+              name: 'Query (JSON object)',
               control: 'textarea',
               required: true,
               cssClass: 'l-textarea-sm'
             },
             {
-              key: 'metric',
-              name: 'Metric',
-              control: 'textfield',
-              required: true
-            },
-            {
               key: 'total',
-              name: 'Show totals?',
+              name: 'Compute totals?',
               control: 'checkbox'
             }
           ]
