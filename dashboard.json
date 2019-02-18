@@ -99,6 +99,41 @@
       }
     ]
   },
+  "listings": {
+    "title": "Listings",
+    "metrics": [
+      {
+        "label": "Newly started",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "listingStarted"
+        }
+      },
+      {
+        "label": "Newly published",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "listingPublished"
+        }
+      },
+      {
+        "label": "Total started",
+        "postprocess": "total",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "listingStarted"
+        }
+      },
+      {
+        "label": "Total published",
+        "postprocess": "total",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "listingPublished"
+        }
+      }
+    ]
+  },
   "bookings": {
     "title": "Bookings",
     "metrics": [

@@ -138,6 +138,8 @@
           result: totals
         };
       };
+      const identity = a => a;
+      const postprocessors = { total, identity };
 
       client.run(MARKETS.map(async market => {
         const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${market}&key=AIzaSyB7DfwQwnhYjPzx8UIF0JHlgVeNwSDnZkY`;
@@ -174,35 +176,6 @@
       .then(results => markets.render(results))
       .catch(error => markets.message(error.message));
 
-      client.run([
-        client.query({
-          analysis_type: 'count',
-          event_collection: 'listingStarted',
-          timeframe,
-          interval
-        }),
-        client.query({
-          analysis_type: 'count',
-          event_collection: 'listingPublished',
-          timeframe,
-          interval
-        }),
-        client.query({
-          analysis_type: 'count',
-          event_collection: 'listingStarted',
-          timeframe,
-          interval
-        }).then(total),
-        client.query({
-          analysis_type: 'count',
-          event_collection: 'listingPublished',
-          timeframe,
-          interval
-        }).then(total)
-      ])
-      .then(results => listings.render(results))
-      .catch(error => listings.message(error.message));
-
       fetch('dashboard.json')
         .then(res => res.json())
         .then(dashboards => Object.keys(dashboards).forEach(key => {
@@ -213,11 +186,11 @@
             showLoadingSpinner: true,
             labels: metrics.map(({ label }) => label)
           });
-          client.run(metrics.map(({ query }) => client.query({
+          client.run(metrics.map(({ query, postprocess }) => client.query({
             ...query,
             timeframe,
             interval
-          })))
+          }).then(postprocessors[postprocess || 'identity' ])))
           .then(results => chart.render(results))
           .catch(error => chart.message(error.message));
         }));
