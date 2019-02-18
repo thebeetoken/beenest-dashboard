@@ -221,61 +221,6 @@
       .then(results => bookings.render(results))
       .catch(error => bookings.message(error.message));
 
-      client.run([
-        client.query({
-          analysis_type: 'count',
-          event_collection: 'userVerified',
-          timeframe,
-          interval
-        }),
-        client.query({
-          analysis_type: 'count',
-          event_collection: 'userPayoutInfoCompleted',
-          timeframe,
-          interval,
-          filters: [{
-            property_name: 'stripeExpressAccount',
-            operator: 'eq',
-            property_value: true
-          }]
-        }),
-        client.query({
-          analysis_type: 'count',
-          event_collection: 'userPayoutInfoCompleted',
-          timeframe,
-          interval,
-          filters: [{
-            property_name: 'ethWalletAddress',
-            operator: 'eq',
-            property_value: true
-          }]
-        }),
-        client.query({
-          analysis_type: 'count',
-          event_collection: 'userPayoutInfoCompleted',
-          timeframe,
-          interval,
-          filters: [{
-            property_name: 'btcWalletAddress',
-            operator: 'eq',
-            property_value: true
-          }]
-        }),
-        client.query({
-          analysis_type: 'count',
-          event_collection: 'userPayoutInfoCompleted',
-          timeframe,
-          interval,
-          filters: [{
-            property_name: 'profilePhoto',
-            operator: 'eq',
-            property_value: true
-          }]
-        })
-      ])
-      .then(results => onboarding.render(results))
-      .catch(error => onboarding.message(error.message));
-
       fetch('dashboard.json')
         .then(res => res.json())
         .then(dashboards => Object.keys(dashboards).forEach(key => {

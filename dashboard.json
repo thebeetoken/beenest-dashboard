@@ -1,6 +1,6 @@
 {
   "users": {
-    "title": "",
+    "title": "Users",
     "metrics": [
       {
         "label": "New users",
@@ -36,6 +36,66 @@
             }
           ]          
         }        
+      }
+    ]
+  },
+  "onboarding": {
+    "title": "Onboarding",
+    "metrics": [
+      {
+        "label": "Verified",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "userVerified"
+        }
+      },
+      {
+        "label": "Stripe",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "userPayoutInfoCompleted",
+          "filters": [{
+            "property_name": "stripeExpressAccount",
+            "operator": "eq",
+            "property_value": true
+          }]
+        }
+      },
+      {
+        "label": "ETH wallet",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "userPayoutInfoCompleted",
+          "filters": [{
+            "property_name": "ethWalletAddress",
+            "operator": "eq",
+            "property_value": true
+          }]
+        }
+      },
+      {
+        "label": "BTC wallet",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "userPayoutInfoCompleted",
+          "filters": [{
+            "property_name": "btcWalletAddress",
+            "operator": "eq",
+            "property_value": true
+          }]
+        }
+      },
+      {
+        "label": "Profile pic",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "userPayoutInfoCompleted",
+          "filters": [{
+            "property_name": "profilePhoto",
+            "operator": "eq",
+            "property_value": true
+          }]
+        }
       }
     ]
   }
