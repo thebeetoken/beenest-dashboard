@@ -20,6 +20,9 @@
         <div class="col" id="listings"></div>
         <div class="col" id="bookings"></div>
       </div>
+      <div class="row">
+        <div class="col" id="markets"></div>
+      </div>
     </div>
 
     <form action="">
@@ -49,7 +52,6 @@
         readKey: 'EA80E1D1209DDCCF3D7B01FA7D8461950D57B4207DCA0470DFE1770A81A5CCA42CF7CD4EBEFF904F76F55DCA0CCA23D0D9B68B87EED8601744FEBC9BB883AB46C674D8FD81603CAB827004BC78734189096152E6D9BA5D6A27418684562F9A0D'
       });
       const params = (new URL(document.location)).searchParams;
-      
       const timeframe = {
         start: params.get('start') || '2018-08-20T12:00:00.000Z',
         end: params.get('end') || '2019-03-01T12:00:00.000Z'
@@ -60,14 +62,35 @@
       document.getElementById('end').value = timeframe.end;
       document.getElementById('interval').value = interval;
 
+      const MARKETS = [
+        'San Francisco, CA',
+        'Los Angeles, CA',
+        'New York, NY',
+        'Las Vegas, NV',
+        'Miami, FL',
+        'Hawaii, HI',
+        'Denver, CO',
+        'Chicago, IL',
+        'San Diego, CA',
+        'Boston, MA',
+        'Seattle, WA',
+        'Austin, TX',
+        'New Orleans, LA',
+        'Houston, TX',
+        'Orlando, FL'
+      ];
+
+      const markets = new KeenDataviz({
+        container: '#markets',
+        title: 'Markets',
+        showLoadingSpinner: true,
+        labels: MARKETS
+      });
+
       const listings = new KeenDataviz({
         container: '#listings',
         title: 'Listings',
         showLoadingSpinner: true,
-        labelMapping: {
-          'listingStarted count': 'Started',
-          'listingPublished count': 'Published'
-        },
         labels: [
           'Started',
           'Published',
@@ -126,6 +149,41 @@
           result: totals
         };
       };
+
+      client.run(MARKETS.map(async market => {
+        const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${market}&key=AIzaSyB7DfwQwnhYjPzx8UIF0JHlgVeNwSDnZkY`;
+        const { viewport } = (await (await fetch(url)).json()).results[0].geometry;
+        return client.query({
+          analysis_type: 'count',
+          event_collection: 'listingPublished',
+          timeframe,
+          interval,
+          filters: [
+            {
+              property_name: 'lat',
+              operator: 'gt',
+              property_value: viewport.southwest.lat
+            },
+            {
+              property_name: 'lat',
+              operator: 'lt',
+              property_value: viewport.northeast.lat
+            },
+            {
+              property_name: 'lng',
+              operator: 'lt',
+              property_value: viewport.southwest.lng
+            },
+            {
+              property_name: 'lng',
+              operator: 'gt',
+              property_value: viewport.northeast.lng
+            }
+          ]
+        }).then(total);
+      }))
+      .then(results => markets.render(results))
+      .catch(error => markets.message(error.message));
 
       client.run([
         client.query({
