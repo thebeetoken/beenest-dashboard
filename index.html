@@ -22,14 +22,25 @@
       </div>
     </div>
 
-    <select id="interval">
-      <option value="minutely">Minute</option>
-      <option value="hourly">Hour</option>
-      <option value="daily">Day</option>
-      <option value="weekly">Week</option>
-      <option value="monthly">Month</option>
-      <option value="yearly">Year</option>
-    </select>
+    <form action="">
+      <label for="start">Start</label>
+      <input type="text" id="start" name="start">
+
+      <label for="end">End</label>
+      <input type="text" id="end" name="end">
+
+      <label for="interval">Interval</label>
+      <select id="interval" name="interval">
+        <option value="minutely">Minute</option>
+        <option value="hourly">Hour</option>
+        <option value="daily">Day</option>
+        <option value="weekly">Week</option>
+        <option value="monthly">Month</option>
+        <option value="yearly">Year</option>
+      </select>
+
+      <input type="submit" value="Query">
+    </form>
 
     <!-- Create and Render -->
     <script>
