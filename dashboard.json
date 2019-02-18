@@ -1,0 +1,42 @@
+{
+  "users": {
+    "title": "",
+    "metrics": [
+      {
+        "label": "New users",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "signup"          
+        }
+      },
+      {
+        "label": "New hosts",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "signup",
+          "filters": [
+            {
+              "property_name": "isHost",
+              "operator": "eq",
+              "property_value": true
+            }
+          ]
+        }        
+      },
+      {
+        "label": "New guests",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "signup",
+          "filters": [
+            {
+              "property_name": "isHost",
+              "operator": "eq",
+              "property_value": false
+            }
+          ]          
+        }        
+      }
+    ]
+  }
+}

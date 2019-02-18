@@ -118,17 +118,6 @@
         ]
       });
 
-      const users = new KeenDataviz({
-        container: '#users',
-        title: 'Users',
-        showLoadingSpinner: true,
-        labels: [
-          'New users',
-          'New hosts',
-          'New guests'
-        ]
-      });
-
       const total = async results => {
         const priors = await client.query({
           ...results.query,
@@ -287,38 +276,24 @@
       .then(results => onboarding.render(results))
       .catch(error => onboarding.message(error.message));
 
-      client.run([
-        client.query({
-          analysis_type: 'count',
-          event_collection: 'signup',
-          timeframe,
-          interval
-        }),
-        client.query({
-          analysis_type: 'count',
-          event_collection: 'signup',
-          timeframe,
-          interval,
-          filters: [{
-            property_name: 'isHost',
-            operator: 'eq',
-            property_value: true
-          }]
-        }),
-        client.query({
-          analysis_type: 'count',
-          event_collection: 'signup',
-          timeframe,
-          interval,
-          filters: [{
-            property_name: 'isHost',
-            operator: 'eq',
-            property_value: false
-          }]
-        })
-      ])
-      .then(results => users.render(results))
-      .catch(error => users.message(error.message));
+      fetch('dashboard.json')
+        .then(res => res.json())
+        .then(dashboards => Object.keys(dashboards).forEach(key => {
+          const { title, metrics } = dashboards[key];
+          const chart = new KeenDataviz({
+            container: `#${key}`,
+            title,
+            showLoadingSpinner: true,
+            labels: metrics.map(({ label }) => label)
+          });
+          client.run(metrics.map(({ query }) => client.query({
+            ...query,
+            timeframe,
+            interval
+          })))
+          .then(results => chart.render(results))
+          .catch(error => chart.message(error.message));
+        }));
     </script>
   </body>
 </html>
