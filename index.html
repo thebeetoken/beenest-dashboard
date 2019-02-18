@@ -13,7 +13,7 @@
   <body>
     <div class="container">
       <div class="row">
-        <div class="col" id="guests"></div>
+        <div class="col" id="users"></div>
         <div class="col" id="hosts"></div>
       </div>
       <div class="row">
@@ -59,9 +59,9 @@
         }
       });
 
-      const guests = new KeenDataviz({
-        container: '#guests',
-        title: 'Guests',
+      const users = new KeenDataviz({
+        container: '#users',
+        title: 'Users',
         showLoadingSpinner: true
       });
 
@@ -156,16 +156,33 @@
           analysis_type: 'count',
           event_collection: 'signup',
           timeframe,
+          interval: 'weekly'
+        }),
+        client.query({
+          analysis_type: 'count',
+          event_collection: 'signup',
+          timeframe,
           interval: 'weekly',
           filters: [{
             property_name: 'isHost',
             operator: 'eq',
             property_value: false
           }]
+        }),
+        client.query({
+          analysis_type: 'count',
+          event_collection: 'signup',
+          timeframe,
+          interval: 'weekly',
+          filters: [{
+            property_name: 'isHost',
+            operator: 'eq',
+            property_value: true
+          }]
         })
       ])
-      .then(results => guests.render(results))
-      .catch(error => guests.message(error.message));
+      .then(results => users.render(results))
+      .catch(error => users.message(error.message));
     </script>
   </body>
 </html>
