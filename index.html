@@ -22,12 +22,23 @@
       </div>
     </div>
 
+    <select id="interval">
+      <option value="minutely">Minute</option>
+      <option value="hourly">Hour</option>
+      <option value="daily">Day</option>
+      <option value="weekly">Week</option>
+      <option value="monthly">Month</option>
+      <option value="yearly">Year</option>
+    </select>
+
     <!-- Create and Render -->
     <script>
       const client = new KeenAnalysis({
         projectId: '5c6471eec9e77c000121bb53',
         readKey: 'EA80E1D1209DDCCF3D7B01FA7D8461950D57B4207DCA0470DFE1770A81A5CCA42CF7CD4EBEFF904F76F55DCA0CCA23D0D9B68B87EED8601744FEBC9BB883AB46C674D8FD81603CAB827004BC78734189096152E6D9BA5D6A27418684562F9A0D'
       });
+      const interval = document.getElementById('interval');
+      interval.addEventListener('change', event => console.log(event));
       
       const timeframe = {
         start: '2018-08-20T12:00:00.000Z',
