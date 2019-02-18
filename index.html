@@ -203,24 +203,6 @@
       .then(results => listings.render(results))
       .catch(error => listings.message(error.message));
 
-      client.run([
-        'bookingStarted',
-        'bookingRequested',
-        'bookingAccepted',
-        'bookingRejected',
-        'bookingRescinded',
-        'bookingCancelled',
-        'bookingPaidByGuest',
-        'bookingPaidOut',
-      ].map(event => client.query({
-        analysis_type: 'count',
-        event_collection: event,
-        timeframe,
-        interval
-      })))
-      .then(results => bookings.render(results))
-      .catch(error => bookings.message(error.message));
-
       fetch('dashboard.json')
         .then(res => res.json())
         .then(dashboards => Object.keys(dashboards).forEach(key => {

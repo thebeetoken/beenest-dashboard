@@ -98,5 +98,66 @@
         }
       }
     ]
+  },
+  "bookings": {
+    "title": "Bookings",
+    "metrics": [
+      {
+        "label": "Started",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "bookingStarted"
+        }
+      },
+      {
+        "label": "Requested",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "bookingRequested"
+        }
+      },
+      {
+        "label": "Accepted",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "bookingAccepted"
+        }
+      },
+      {
+        "label": "Rejected",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "bookingRejected"
+        }
+      },
+      {
+        "label": "Rescinded",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "bookingRescinded"
+        }
+      },
+      {
+        "label": "Cancelled",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "bookingCancelled"
+        }
+      },
+      {
+        "label": "Paid by Guest",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "bookingPaidByGuest"
+        }
+      },
+      {
+        "label": "Paid to Host",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "bookingPaidOut"
+        }
+      }
+    ]
   }
 }
