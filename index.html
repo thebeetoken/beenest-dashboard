@@ -62,62 +62,6 @@
       document.getElementById('end').value = timeframe.end;
       document.getElementById('interval').value = interval;
 
-      const MARKETS = [
-        'San Francisco, CA',
-        'Los Angeles, CA',
-        'New York, NY',
-        'Las Vegas, NV',
-        'Miami, FL',
-        'Hawaii, HI',
-        'Denver, CO',
-        'Chicago, IL',
-        'San Diego, CA',
-        'Boston, MA',
-        'Seattle, WA',
-        'Austin, TX',
-        'New Orleans, LA',
-        'Houston, TX',
-        'Orlando, FL'
-      ];
-
-      const markets = new KeenDataviz({
-        container: '#markets',
-        title: 'Markets',
-        showLoadingSpinner: true,
-        labels: MARKETS
-      });
-
-      const listings = new KeenDataviz({
-        container: '#listings',
-        title: 'Listings',
-        showLoadingSpinner: true,
-        labels: [
-          'Started',
-          'Published',
-          'Total started',
-          'Total published'          
-        ]
-      });
-
-      const bookings = new KeenDataviz({
-        container: '#bookings',
-        title: 'Bookings',
-        showLoadingSpinner: true
-      });
-
-      const onboarding = new KeenDataviz({
-        container: '#onboarding',
-        title: 'Onboarding',
-        showLoadingSpinner: true,
-        labels: [
-          'Verified',
-          'Stripe',
-          'Eth wallet',
-          'Btc wallet',
-          'Profile pic'
-        ]
-      });
-
       const locate = async metric => {
         const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${metric.location}&key=AIzaSyB7DfwQwnhYjPzx8UIF0JHlgVeNwSDnZkY`;
         const { viewport } = (await (await fetch(url)).json()).results[0].geometry;
@@ -175,41 +119,6 @@
       const identity = a => a;
       const postprocessors = { total, identity };
 
-      client.run(MARKETS.map(async market => {
-        const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${market}&key=AIzaSyB7DfwQwnhYjPzx8UIF0JHlgVeNwSDnZkY`;
-        const { viewport } = (await (await fetch(url)).json()).results[0].geometry;
-        return client.query({
-          analysis_type: 'count',
-          event_collection: 'listingPublished',
-          timeframe,
-          interval,
-          filters: [
-            {
-              property_name: 'lat',
-              operator: 'gt',
-              property_value: viewport.southwest.lat
-            },
-            {
-              property_name: 'lat',
-              operator: 'lt',
-              property_value: viewport.northeast.lat
-            },
-            {
-              property_name: 'lng',
-              operator: 'lt',
-              property_value: viewport.southwest.lng
-            },
-            {
-              property_name: 'lng',
-              operator: 'gt',
-              property_value: viewport.northeast.lng
-            }
-          ]
-        }).then(total);
-      }))
-      .then(results => markets.render(results))
-      .catch(error => markets.message(error.message));
-
       fetch('dashboard.json')
         .then(res => res.json())
         .then(dashboards => Object.keys(dashboards).forEach(key => {
@@ -224,6 +133,7 @@
             const preprocess = preprocessors[metric.preprocess || 'query'];
             const postprocess = postprocessors[metric.postprocess || 'identity'];
             const query = await preprocess(metric);
+            console.log(metric, query);
             const results = await client.query({ ...query, timeframe, interval });
             return postprocess(results);
           }))

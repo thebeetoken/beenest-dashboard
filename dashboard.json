@@ -194,5 +194,145 @@
         }
       }
     ]
+  },
+  "markets": {
+    "title": "Markets",
+    "metrics": [
+      {
+        "label": "San Francisco",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "listingPublished"
+        },
+        "preprocess": "locate",
+        "location": "San Francisco, CA"
+      },
+      {
+        "label": "Los Angeles",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "listingPublished"
+        },
+        "preprocess": "locate",
+        "location": "Los Angeles, CA"
+      },
+      {
+        "label": "New York",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "listingPublished"
+        },
+        "preprocess": "locate",
+        "location": "New York, NY"
+      },
+      {
+        "label": "Las Vegas",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "listingPublished"
+        },
+        "preprocess": "locate",
+        "location": "Las Vegas, NV"
+      },
+      {
+        "label": "Miami",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "listingPublished"
+        },
+        "preprocess": "locate",
+        "location": "Miami, FL"
+      },
+      {
+        "label": "Hawaii",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "listingPublished"
+        },
+        "preprocess": "locate",
+        "location": "Hawaii, HI"
+      },
+      {
+        "label": "Denver",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "listingPublished"
+        },
+        "preprocess": "locate",
+        "location": "Denver, CO"
+      },
+      {
+        "label": "Chicago",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "listingPublished"
+        },
+        "preprocess": "locate",
+        "location": "Chicago, IL"
+      },
+      {
+        "label": "San Diego",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "listingPublished"
+        },
+        "preprocess": "locate",
+        "location": "San Diego, CA"
+      },
+      {
+        "label": "Boston",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "listingPublished"
+        },
+        "preprocess": "locate",
+        "location": "Boston, MA"
+      },
+      {
+        "label": "Seattle",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "listingPublished"
+        },
+        "preprocess": "locate",
+        "location": "Seattle, WA"
+      },
+      {
+        "label": "Austin",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "listingPublished"
+        },
+        "preprocess": "locate",
+        "location": "Austin, TX"
+      },
+      {
+        "label": "New Orleans",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "listingPublished"
+        },
+        "preprocess": "locate",
+        "location": "New Orleans, LA"
+      },
+      {
+        "label": "Houston",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "listingPublished"
+        },
+        "preprocess": "locate",
+        "location": "Houston, TX"
+      },
+      {
+        "label": "Orlando",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "listingPublished"
+        },
+        "preprocess": "locate",
+        "location": "Orlando, FL"
+      }
+    ]
   }
 }
