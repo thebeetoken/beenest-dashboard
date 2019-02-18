@@ -14,7 +14,7 @@
     <div class="container">
       <div class="row">
         <div class="col" id="users"></div>
-        <div class="col" id="hosts"></div>
+        <div class="col" id="onboarding"></div>
       </div>
       <div class="row">
         <div class="col" id="listings"></div>
@@ -50,13 +50,17 @@
         showLoadingSpinner: true
       });
 
-      const hosts = new KeenDataviz({
-        container: '#hosts',
-        title: 'Hosts',
+      const onboarding = new KeenDataviz({
+        container: '#onboarding',
+        title: 'Onboarding',
         showLoadingSpinner: true,
-        labelMapping: {
-          'userPayoutInfoCompleted count': 'Payout info completed'
-        }
+        labels: [
+          'Verified',
+          'Stripe',
+          'Eth wallet',
+          'Btc wallet',
+          'Profile pic'
+        ]
       });
 
       const users = new KeenDataviz({
@@ -137,11 +141,17 @@
       client.run([
         client.query({
           analysis_type: 'count',
-          event_collection: 'signup',
+          event_collection: 'userVerified',
+          timeframe,
+          interval: 'weekly'
+        }),
+        client.query({
+          analysis_type: 'count',
+          event_collection: 'userPayoutInfoCompleted',
           timeframe,
           interval: 'weekly',
           filters: [{
-            property_name: 'isHost',
+            property_name: 'stripeExpressAccount',
             operator: 'eq',
             property_value: true
           }]
@@ -150,11 +160,38 @@
           analysis_type: 'count',
           event_collection: 'userPayoutInfoCompleted',
           timeframe,
-          interval: 'weekly'
+          interval: 'weekly',
+          filters: [{
+            property_name: 'ethWalletAddress',
+            operator: 'eq',
+            property_value: true
+          }]
+        }),
+        client.query({
+          analysis_type: 'count',
+          event_collection: 'userPayoutInfoCompleted',
+          timeframe,
+          interval: 'weekly',
+          filters: [{
+            property_name: 'btcWalletAddress',
+            operator: 'eq',
+            property_value: true
+          }]
+        }),
+        client.query({
+          analysis_type: 'count',
+          event_collection: 'userPayoutInfoCompleted',
+          timeframe,
+          interval: 'weekly',
+          filters: [{
+            property_name: 'profilePhoto',
+            operator: 'eq',
+            property_value: true
+          }]
         })
       ])
-      .then(results => hosts.render(results))
-      .catch(error => hosts.message(error.message));
+      .then(results => onboarding.render(results))
+      .catch(error => onboarding.message(error.message));
 
       client.run([
         client.query({
