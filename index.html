@@ -62,7 +62,12 @@
       const users = new KeenDataviz({
         container: '#users',
         title: 'Users',
-        showLoadingSpinner: true
+        showLoadingSpinner: true,
+        labels: [
+          'New users',
+          'New hosts',
+          'New guests'
+        ]
       });
 
       client.run([
@@ -166,7 +171,7 @@
           filters: [{
             property_name: 'isHost',
             operator: 'eq',
-            property_value: false
+            property_value: true
           }]
         }),
         client.query({
@@ -177,7 +182,7 @@
           filters: [{
             property_name: 'isHost',
             operator: 'eq',
-            property_value: true
+            property_value: false
           }]
         })
       ])
