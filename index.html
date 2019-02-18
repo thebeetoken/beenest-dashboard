@@ -41,7 +41,13 @@
         labelMapping: {
           'listingStarted count': 'Started',
           'listingPublished count': 'Published'
-        }
+        },
+        labels: [
+          'Started',
+          'Published',
+          'Total started',
+          'Total published'          
+        ]
       });
 
       const bookings = new KeenDataviz({
@@ -74,22 +80,26 @@
         ]
       });
 
-      client.run([
-        client.query({
-          analysis_type: 'count',
-          event_collection: 'listingStarted',
-          timeframe,
-          interval: 'weekly'
-        }),
-        client.query({
-          analysis_type: 'count',
-          event_collection: 'listingPublished',
-          timeframe,
-          interval: 'weekly'
-        })
-      ])
-      .then(results => listings.render(results))
-      .catch(error => listings.message(error.message));
+      const total = async results => {
+        const priors = await client.query({
+          ...results.query,
+          timeframe: {
+            start: '2018-01-01T12:00:00.000Z',
+            end: results.query.timeframe.start
+          },
+          interval: 'yearly'
+        });
+        let sum = priors.result.reduce((total, point) => total += point.value, 0);
+        const totals = results.result.map(point => {
+          sum += point.value;
+          return { ...point, value: sum };
+        });
+        return {
+          ...results,
+          query: { ...results.query, analysis_type: 'total' },
+          result: totals
+        };
+      };
 
       client.run([
         client.query({
@@ -103,20 +113,20 @@
           event_collection: 'listingPublished',
           timeframe,
           interval: 'weekly'
-        })
+        }),
+        client.query({
+          analysis_type: 'count',
+          event_collection: 'listingStarted',
+          timeframe,
+          interval: 'weekly'
+        }).then(total),
+        client.query({
+          analysis_type: 'count',
+          event_collection: 'listingPublished',
+          timeframe,
+          interval: 'weekly'
+        }).then(total)
       ])
-      .then(results => results.map(result => {
-        let sum = 0;
-        const totals = result.result.map(point => {
-          sum += point.value;
-          return { ...point, value: sum };
-        });
-        return {
-          ...result,
-          query: { ...result.query, analysis_type: 'total' },
-          result: totals
-        };
-      }))
       .then(results => listings.render(results))
       .catch(error => listings.message(error.message));
 
