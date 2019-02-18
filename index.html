@@ -118,6 +118,40 @@
         ]
       });
 
+      const locate = async metric => {
+        const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${metric.location}&key=AIzaSyB7DfwQwnhYjPzx8UIF0JHlgVeNwSDnZkY`;
+        const { viewport } = (await (await fetch(url)).json()).results[0].geometry;
+        const filters = [
+          ...(metric.filters || []),
+          {
+            property_name: 'lat',
+            operator: 'gt',
+            property_value: viewport.southwest.lat
+          },
+          {
+            property_name: 'lat',
+            operator: 'lt',
+            property_value: viewport.northeast.lat
+          },
+          {
+            property_name: 'lng',
+            operator: 'lt',
+            property_value: viewport.southwest.lng
+          },
+          {
+            property_name: 'lng',
+            operator: 'gt',
+            property_value: viewport.northeast.lng
+          }
+        ];
+        return {
+          ...metric.query,
+          filters
+        };
+      };
+      const query = async metric => metric.query;
+      const preprocessors = { locate, query };
+
       const total = async results => {
         const priors = await client.query({
           ...results.query,
@@ -186,11 +220,13 @@
             showLoadingSpinner: true,
             labels: metrics.map(({ label }) => label)
           });
-          client.run(metrics.map(({ query, postprocess }) => client.query({
-            ...query,
-            timeframe,
-            interval
-          }).then(postprocessors[postprocess || 'identity' ])))
+          client.run(metrics.map(async metric => {
+            const preprocess = preprocessors[metric.preprocess || 'query'];
+            const postprocess = postprocessors[metric.postprocess || 'identity'];
+            const query = await preprocess(metric);
+            const results = await client.query({ ...query, timeframe, interval });
+            return postprocess(results);
+          }))
           .then(results => chart.render(results))
           .catch(error => chart.message(error.message));
         }));
