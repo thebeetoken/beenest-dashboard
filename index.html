@@ -132,25 +132,25 @@
           analysis_type: 'count',
           event_collection: 'listingStarted',
           timeframe,
-          interval: 'weekly'
+          interval
         }),
         client.query({
           analysis_type: 'count',
           event_collection: 'listingPublished',
           timeframe,
-          interval: 'weekly'
+          interval
         }),
         client.query({
           analysis_type: 'count',
           event_collection: 'listingStarted',
           timeframe,
-          interval: 'weekly'
+          interval
         }).then(total),
         client.query({
           analysis_type: 'count',
           event_collection: 'listingPublished',
           timeframe,
-          interval: 'weekly'
+          interval
         }).then(total)
       ])
       .then(results => listings.render(results))
@@ -169,7 +169,7 @@
         analysis_type: 'count',
         event_collection: event,
         timeframe,
-        interval: 'weekly'
+        interval
       })))
       .then(results => bookings.render(results))
       .catch(error => bookings.message(error.message));
@@ -179,13 +179,13 @@
           analysis_type: 'count',
           event_collection: 'userVerified',
           timeframe,
-          interval: 'weekly'
+          interval
         }),
         client.query({
           analysis_type: 'count',
           event_collection: 'userPayoutInfoCompleted',
           timeframe,
-          interval: 'weekly',
+          interval,
           filters: [{
             property_name: 'stripeExpressAccount',
             operator: 'eq',
@@ -196,7 +196,7 @@
           analysis_type: 'count',
           event_collection: 'userPayoutInfoCompleted',
           timeframe,
-          interval: 'weekly',
+          interval,
           filters: [{
             property_name: 'ethWalletAddress',
             operator: 'eq',
@@ -207,7 +207,7 @@
           analysis_type: 'count',
           event_collection: 'userPayoutInfoCompleted',
           timeframe,
-          interval: 'weekly',
+          interval,
           filters: [{
             property_name: 'btcWalletAddress',
             operator: 'eq',
@@ -218,7 +218,7 @@
           analysis_type: 'count',
           event_collection: 'userPayoutInfoCompleted',
           timeframe,
-          interval: 'weekly',
+          interval,
           filters: [{
             property_name: 'profilePhoto',
             operator: 'eq',
@@ -240,7 +240,7 @@
           analysis_type: 'count',
           event_collection: 'signup',
           timeframe,
-          interval: 'weekly',
+          interval,
           filters: [{
             property_name: 'isHost',
             operator: 'eq',
@@ -251,7 +251,7 @@
           analysis_type: 'count',
           event_collection: 'signup',
           timeframe,
-          interval: 'weekly',
+          interval,
           filters: [{
             property_name: 'isHost',
             operator: 'eq',
