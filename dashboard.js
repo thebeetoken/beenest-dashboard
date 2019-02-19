@@ -77,6 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const { title, metrics } = dashboards[key];
       const chart = new KeenDataviz({
         container: `#${key}`,
+        theme: 'beedash',
         title,
         showLoadingSpinner: true,
         labels: metrics.map(({ label }) => label)
