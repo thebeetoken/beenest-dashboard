@@ -1,0 +1,29 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:8.11-browsers
+      # https://circleci.com/docs/2.0/circleci-images/
+    working_directory: ~/repo
+    steps:
+      - checkout
+      # Download and cache dependencies
+
+      - run:
+          name: Install AWS cli
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              sudo apt-get install python-dev python-pip
+              sudo pip install awscli
+            else
+              echo 'not needed'
+            fi
+
+      - run:
+          name: Upload to S3
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              aws s3 cp --recursive --exclude assets/* dist/ "s3://dashboard.beenest.io" --acl public-read
+            else
+              echo 'na'
+            fi
