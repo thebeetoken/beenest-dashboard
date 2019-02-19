@@ -24,6 +24,11 @@ Specifically, the Project ID and Read Key for each project (available from the
       }
     }
 
+## Development
+
+The Beenest Analytics Dashboard just needs to be served over HTTP, e.g. with
+[`http-server`](https://www.npmjs.com/package/http-server).
+
 ## Deployment
 
 To deploy, upload contents of this repository along with `keen.json` to the 
