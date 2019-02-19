@@ -36,6 +36,14 @@
             }
           ]          
         }        
+      },
+      {
+        "label": "Total users",
+        "postprocess": "total",
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "signup"
+        }
       }
     ]
   },
