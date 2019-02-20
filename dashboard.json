@@ -342,5 +342,19 @@
         "location": "Orlando, FL"
       }
     ]
+  },
+  "searches": {
+    "title": "Searches",
+    "type": "donut",
+    "metrics": [
+      {
+        "query": {
+          "analysis_type": "count",
+          "event_collection": "search",
+          "group_by": ["locationQuery"],
+          "interval": null
+        }
+      }
+    ]
   }
 }
