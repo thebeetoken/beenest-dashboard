@@ -1,18 +1,19 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const client = new KeenAnalysis({
-    projectId: '5c6471eec9e77c000121bb53',
-    readKey: 'EA80E1D1209DDCCF3D7B01FA7D8461950D57B4207DCA0470DFE1770A81A5CCA42CF7CD4EBEFF904F76F55DCA0CCA23D0D9B68B87EED8601744FEBC9BB883AB46C674D8FD81603CAB827004BC78734189096152E6D9BA5D6A27418684562F9A0D'
-  });
+document.addEventListener('DOMContentLoaded', async function () {
   const params = (new URL(document.location)).searchParams;
   const timeframe = {
     start: params.get('start') || '2018-08-20T12:00:00.000Z',
     end: params.get('end') || '2019-03-01T12:00:00.000Z'
   };
   const interval = params.get('interval') || 'weekly';
+  const venue = params.get('venue') || 'production';
+
+  const keys = await (await fetch('keen.json')).json();
+  const client = new KeenAnalysis(keys[venue]);
 
   document.getElementById('start').value = timeframe.start;
   document.getElementById('end').value = timeframe.end;
   document.getElementById('interval').value = interval;
+  document.getElementById('venue').value = venue;
 
   const locate = async metric => {
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${metric.location}&key=AIzaSyB7DfwQwnhYjPzx8UIF0JHlgVeNwSDnZkY`;
@@ -71,26 +72,25 @@ document.addEventListener('DOMContentLoaded', function () {
   const identity = a => a;
   const postprocessors = { total, identity };
 
-  fetch('dashboard.json')
-    .then(res => res.json())
-    .then(dashboards => Object.keys(dashboards).forEach(key => {
-      const { title, metrics } = dashboards[key];
-      const chart = new KeenDataviz({
-        container: `#${key}`,
-        theme: 'beedash',
-        title,
-        showLoadingSpinner: true,
-        labels: metrics.map(({ label }) => label)
-      });
-      client.run(metrics.map(async metric => {
-        const preprocess = preprocessors[metric.preprocess || 'query'];
-        const postprocess = postprocessors[metric.postprocess || 'identity'];
-        const query = await preprocess(metric);
-        console.log(metric, query);
-        const results = await client.query({ ...query, timeframe, interval });
-        return postprocess(results);
-      }))
-      .then(results => chart.render(results))
-      .catch(error => chart.message(error.message));
-    }));  
+  const dashboards = await (await fetch('dashboard.json')).json();
+  Object.keys(dashboards).forEach(key => {
+    const { title, metrics } = dashboards[key];
+    const chart = new KeenDataviz({
+      container: `#${key}`,
+      theme: 'beedash',
+      title,
+      showLoadingSpinner: true,
+      labels: metrics.map(({ label }) => label)
+    });
+    client.run(metrics.map(async metric => {
+      const preprocess = preprocessors[metric.preprocess || 'query'];
+      const postprocess = postprocessors[metric.postprocess || 'identity'];
+      const query = await preprocess(metric);
+      console.log(metric, query);
+      const results = await client.query({ ...query, timeframe, interval });
+      return postprocess(results);
+    }))
+    .then(results => chart.render(results))
+    .catch(error => chart.message(error.message));
+  });
 });
