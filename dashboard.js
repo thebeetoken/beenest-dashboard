@@ -74,9 +74,10 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   const dashboards = await (await fetch('dashboard.json')).json();
   Object.keys(dashboards).forEach(key => {
-    const { title, metrics } = dashboards[key];
+    const { title, metrics, type } = dashboards[key];
     const chart = new KeenDataviz({
       container: `#${key}`,
+      type: type || 'area',
       theme: 'beedash',
       title,
       showLoadingSpinner: true,
@@ -86,8 +87,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       const preprocess = preprocessors[metric.preprocess || 'query'];
       const postprocess = postprocessors[metric.postprocess || 'identity'];
       const query = await preprocess(metric);
-      console.log(metric, query);
-      const results = await client.query({ ...query, timeframe, interval });
+      const results = await client.query({ timeframe, interval, ...query });
       return postprocess(results);
     }))
     .then(results => chart.render(results))
